@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Shelves.js Example</title>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script>
+<style>
+html {
+	height: 100%;
+	width: 100%;
+}
+body {
+	width:100%;
+	height:100%;
+}
+.container {
+	position: relative;
+	width: 60%;
+	height: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: rgba(153,153,153,0.5);
+	text-align: center;
+	perspective: 700px;
+	-webkit-perspective: 700px;
+	perspective-origin: center center;
+	margin-bottom: 10%;
+}
+a {
+	position:relative;
+	font-size: 1.5em;
+	color:rgba(0,0,0,1);
+}
+.box {
+	position: relative;
+	display: block;
+	background-color: rgba(0,153,153,1);
+	width: 20px;
+	height: 80px;
+	margin-top: 0;
+	margin-right: 0;
+	margin-bottom: 0;
+	margin-left: 0;
+	float:left;
+	transform: rotateY(90deg);
+	-webkit-transition: all 0.5s;
+	-moz-transition: all 0.5s;
+	-ms-transition: all 0.5s;
+	-o-transition: all 0.5s;
+	transition: all 0.5s;
+}
+
+.expand {
+	width: 50px;
+	transform: rotate(0) scale(3);
+	background-color: rgba(255,204,51,1);
+	-webkit-transition: all 0.5s ease-in 0s;
+	-moz-transition: all 0.5s ease-in 0s;
+	-ms-transition: all 0.5s ease-in 0s;
+	-o-transition: all 0.5s ease-in 0s;
+	transition: all 0.5s ease-in 0s;
+	z-index: 10;
+}
+</style>
+</head>
+
+<body>
+    <a id="next">Next =></a><br>
+    <a id="prev"><= Prev</a>
+<div class="container" style="height: 80px;">
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div> 
+    </div>
+<script>
+  $(function() { // "Shelve" plug-in
+	  
+	  var  elems = $('.box').length;//Determine the number of elements concerned
+	  
+	  // for every .box
+	  $('.box').each(function(index, element) {
+		  // On click..
+		  $(this).click(function(){
+			  //Toggle the .expand class
+			  $(this).toggleClass('expand');
+			  // if the click aims to create a second .expand...
+			  if ($('.expand').length > 1) {
+				  //The old .expand GTFO and the clicked box get the class
+				  $('.expand').removeClass('expand');
+				  $(this).addClass('expand');
+			  }
+		  });
+	  });
+  
+	  // Click on "next" button
+	  var i = -1;
+	  
+	  $('#next').click(function(){
+		  
+		  i++; // each click on the button increment "i" and trigger the following function...
+		  
+		  $('.box').each(function(index, element) {
+			  
+			  var a = i-1;
+			  
+			  if (i < elems) {
+			  // .box with index = i get class .expand while .box with index = a loose it...	
+				  $('.box:eq('+i+')').addClass('expand');
+				  $('.box:eq('+a+')').removeClass('expand');
+				  return false;
+			  }
+			  if (i > (elems-1)) {
+				  // when "i" grows further than 44, it gets back to zero
+				  i = 0;
+			  }
+		  });
+	  });
+  
+	  // Click on "previous" button
+	  
+	  $('#prev').click(function(){
+		  
+		  Math.abs(i);// prevents i from going negative
+		  i--; // each click on the button decrement "i" and trigger the following function...
+		  
+		  $('.box').each(function(index, element) {
+			  
+			  var a = i+1;
+			  
+			  if (i >= 0) {
+			  // .box with index = i get class .expand while .box with index = a loose it...	
+				  $('.box:eq('+i+')').addClass('expand');
+				  $('.box:eq('+a+')').removeClass('expand');
+				  return false;
+			  }
+			  if (i < 0) {
+				  
+				  if ($('.box:eq(0)').hasClass('expand')) { // When i = 0 and is decremented, prevents a bug while first box stay expanded
+					  $(this).removeClass('expand');
+				  }
+				  // when "i" decreases further than 0, it gets back to 44
+				  i = elems-1;
+			  }
+		  });
+	  });
+  
+	  // click on .box while button's event is triggered...
+	  $('.box').click(function() {
+		  
+		  if ($(this).hasClass('expand')) {
+			  // if click on .box which gets expanded, i gets his index as value
+			  i = $(this).index();
+		  }
+		  
+		  else {
+			  // if click on .expand box
+			  i = -1;
+		  }
+	  });
+	  
+  });(jQuery)
+
+</script>
+</body>
+</html>
